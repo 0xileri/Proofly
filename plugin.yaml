@@ -7,7 +7,7 @@ description: >-
   user as verified. Read-only: never signs, sends or approves anything.
 author: 0xileri
 license: MIT
-homepage: https://github.com/0xileri/proofly
+homepage: https://github.com/0xileri/Proofly
 requires_hermes: ">=0.22.6"
 tags: [base, payments, verification, onchain, safety]
 provides_tools:

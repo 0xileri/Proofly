@@ -6,7 +6,6 @@ This drives ``register`` with a recording context. The real-Hermes check is
 
 import importlib.util
 import inspect
-import re
 import sys
 import unittest
 from pathlib import Path
@@ -16,23 +15,22 @@ from proofly_testutil import ROOT, fixture, load_plugin
 plugin = load_plugin()
 
 try:
-    import yaml  # PyYAML when available
-except ImportError:  # pragma: no cover - minimal reader for the block lists used here
-    yaml = None
+    import yaml  # PyYAML
+    _load_yaml = yaml.safe_load
+except ImportError:
+    try:
+        from ruamel.yaml import YAML  # what Hermes itself uses
+
+        def _load_yaml(text):
+            return YAML(typ="safe").load(text)
+    except ImportError:  # pragma: no cover
+        _load_yaml = None
 
 
 def read_manifest(path: Path) -> dict:
-    text = path.read_text()
-    if yaml is not None:
-        return yaml.safe_load(text)
-    data, key = {}, None
-    for line in text.splitlines():
-        if re.match(r"^[a-z_]+:", line):
-            key, _, value = line.partition(":")
-            data[key] = value.strip().strip('"') or []
-        elif key and line.strip().startswith("- "):
-            data[key].append(line.strip()[2:])
-    return data
+    if _load_yaml is None:
+        raise unittest.SkipTest("no YAML parser (PyYAML or ruamel.yaml) available")
+    return _load_yaml(path.read_text())
 
 
 class RecordingContext:

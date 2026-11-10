@@ -1,6 +1,6 @@
 """Opt-in live checks against real Base mainnet RPC.
 
-Run with:  PROOFLY_LIVE=1 python -m unittest tests.test_integration -v   (from the repo root)
+Run with:  PROOFLY_LIVE=1 python -m unittest discover -s tests -p test_integration.py -v
 Optional:  PROOFLY_RPC_URL=https://base-rpc.publicnode.com  (defaults to https://mainnet.base.org)
 
 The hashes are real historical Base mainnet transactions, independently cross-checked on two RPC

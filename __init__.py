@@ -47,7 +47,11 @@ def register(ctx):
     )
 
     def _command(raw_args: str = "", **kwargs):
-        return commands.handle(runtime, raw_args, **kwargs)
+        try:
+            return commands.handle(runtime, raw_args, **kwargs)
+        except Exception as exc:  # e.g. a locked ledger: answer the user instead of raising
+            logger.warning("proofly: /proofly failed", exc_info=True)
+            return f"Proofly could not complete that command ({type(exc).__name__})."
 
     ctx.register_command(
         "proofly",
