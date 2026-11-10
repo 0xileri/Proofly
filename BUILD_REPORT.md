@@ -197,3 +197,33 @@ python -m unittest discover -s tests -v
 hermes plugins doctor . --ci
 hermes plugins validate . --install-deps
 ```
+
+## Post-hackathon TODO (code fixes, deliberately not applied before the deadline)
+
+Found in the pre-recording audit on 2026-11-10 (fresh installs of v0.23.1 and v0.22.6, real Hermes CLI
+runs against live Base RPC). None of them produces a false "verified"; they affect setup, latency and
+polish. Each one changes code, so after landing it: re-run the tests and `hermes plugins validate` on
+v0.22.6 and v0.23.1, then bump `sha` (and `version`) in the catalog entry through a new PR, as catalog
+rule 4 requires.
+
+1. **Live settings reload.** `register()` reads the settings once (`load_settings(ctx.get_config)`).
+   Hermes keeps a background gateway between `hermes` launches, so a later change to `payment_tools`,
+   `mode`, `rpc_url`, `timeout_seconds`, `min_confirmations` or `annotate_tool_results` is ignored until
+   the gateway restarts; the README currently tells users to run `hermes gateway stop`. Fix: read the
+   settings through `ctx.get_config` on each hook call behind a short TTL cache (about 5 s) and rebuild
+   the RPC client and verifier when `rpc_url`, `timeout_seconds` or `min_confirmations` change. Test:
+   change `payment_tools` between two turns with no restart.
+2. **Timeout reuse within a turn.** With a hanging RPC endpoint a payment turn held the reply 26.6 s:
+   the `transform_tool_result` check spent about 12.4 s (6 s timeout plus one retry), then
+   `transform_llm_output` repeated it because `RPC_ERROR` is never cached. Fix: in `_rewrite_reply`,
+   reuse the event's result from the same turn when it is `RPC_ERROR` with reason `timeout`,
+   `deadline_exceeded` or `network_error`, and stop retrying on `timeout` (keep the retry for
+   `network_error` and `rate_limited`). Target: a hanging endpoint costs at most one timeout per turn.
+3. **Duplicate ledger row for `proofly_verify_tx`.** `handle_verify_tool` records the check with an
+   empty turn id, and `_rewrite_reply` records the same event again with the real turn id, so the
+   dedupe key differs and `/proofly` lists the check twice. Fix: skip `record()` for `VERIFY_TOOL`
+   events in `_rewrite_reply` (the handler already recorded it), plus a test asserting one row per call.
+4. **`tls_error` label.** urllib wraps `ssl.SSLError` (for example `SSLCertVerificationError`) in
+   `URLError`, so certificate failures are reported as `network_error`. Fix: in `urllib_transport`'s
+   `URLError` branch, map `isinstance(exc.reason, ssl.SSLError)` to `tls_error`, plus a test against a
+   local HTTPS server with an untrusted certificate.

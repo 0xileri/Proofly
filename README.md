@@ -131,6 +131,8 @@ If Proofly fails internally inside a payment context it returns the reply plus a
 
 ## Install
 
+Current release: **Proofly 1.0.0** (`version: "1.0.0"` in `plugin.yaml` and in the catalog entry).
+
 Tested on Hermes **v0.23.1** (current stable, commit `3b421578588243f920886e6fe79a6faa87ea026e`) and
 **v0.22.6** (commit `f0d94882e89ab8d4098b5bb2f166adfb9ee0a0ab`), Python 3.14. v0.22.6 is the first
 release whose `register_hook` accepts `hold_stream`; on v0.22.5 registration fails with
@@ -286,16 +288,55 @@ catalog entry.
 
 Recording the official demo in a real Hermes session (target 65 to 80 seconds, hard cap 89):
 
+Linux / macOS:
+
 ```bash
 hermes plugins install 0xileri/proofly --enable
 git clone https://github.com/0xileri/proofly /tmp/proofly
 cp -r /tmp/proofly/examples/demo-wallet ~/.hermes/plugins/proofly-demo-wallet
 hermes plugins enable proofly-demo-wallet
 hermes config set plugins.entries.proofly.settings.payment_tools '["demo_send_payment"]'
+hermes config set tools.tool_search.enabled off
+hermes config set display.tool_progress off
+hermes config set display.show_reasoning false
+hermes gateway stop
+hermes
 ```
 
-Then set `display.tool_progress: "off"` and `display.show_reasoning: false` as above, start
-`hermes`, and type:
+Windows PowerShell:
+
+```powershell
+hermes plugins install 0xileri/proofly --enable
+git clone https://github.com/0xileri/proofly "$env:TEMP\proofly"
+$h = Split-Path -Parent (hermes config path | Select-Object -Last 1)
+Copy-Item -Recurse "$env:TEMP\proofly\examples\demo-wallet" "$h\plugins\proofly-demo-wallet"
+hermes plugins enable proofly-demo-wallet
+hermes config set plugins.entries.proofly.settings.payment_tools [demo_send_payment]
+hermes config set tools.tool_search.enabled off
+hermes config set display.tool_progress off
+hermes config set display.show_reasoning false
+hermes gateway stop
+hermes
+```
+
+Notes on these steps:
+
+- `tools.tool_search.enabled off`: by default Hermes' Tool Search defers non-core plugin tools behind
+  `tool_search` / `tool_call`, so the model would have to search before it can use the wallet (extra
+  model round trips). Turning it off puts `demo_send_payment` and `proofly_verify_tx` directly in the
+  model's tool list. Proofly also works when a tool is called through the bridge.
+- `hermes gateway stop`: Proofly reads its settings when the plugin loads, and Hermes keeps a background
+  gateway running between launches. Stopping it makes the next `hermes` start a fresh gateway that loads
+  the settings above. Run it again after any later change to Proofly's settings.
+- Windows: `hermes config path` prints the active `config.yaml`; its folder is the Hermes home (normally
+  `%LOCALAPPDATA%\hermes\` on native Windows). Windows PowerShell 5.1 strips inner double quotes from
+  arguments to native programs, so the list is written as `[demo_send_payment]`; Hermes stores it as a
+  list either way. The Hermes commands were checked on Linux; the PowerShell lines were not run on
+  Windows.
+- `display.tool_progress off` prints a spurious "not a recognized config key" notice on v0.23.1; the key
+  is still read.
+
+Then type:
 
 1. (0 to 8 s) title card: "An agent can say a transfer succeeded. Proofly checks the chain."
 2. `Send 5 USDC to 0x77b0d999195a301477494de535720b58fd085ab2 with the demo wallet.` Case A: reverted.
@@ -355,16 +396,19 @@ registration, the demo wallet, live Base checks and the real-Hermes path. Result
 
 - **Network:** sends read-only Ethereum JSON-RPC requests (`eth_chainId`,
   `eth_getTransactionByHash`, `eth_getTransactionReceipt`, `eth_blockNumber`) to the configured Base RPC
-  endpoint only. The endpoint operator can observe the queried tx hashes and your IP address. Requests
-  carry only `Content-Type`, `Accept` and `User-Agent: proofly/1.0`; no cookies, no Authorization, no
-  Hermes credentials.
+  endpoint only. The endpoint operator can observe the queried tx hashes and your IP address. Proofly
+  sets only the `Content-Type`, `Accept` and `User-Agent: proofly/1.0` headers; Python's HTTP client
+  adds the standard `Host`, `Content-Length`, `Connection` and `Accept-Encoding` headers. No cookies,
+  no Authorization, no Hermes credentials. The system `HTTPS_PROXY` / `NO_PROXY` settings are honoured.
 - **Storage:** stores a local verdict ledger in Hermes profile-scoped plugin data only
   (`<HERMES_HOME>/plugin-data/proofly/data.db`, via `plugins.plugin_storage.plugin_db`). Per row: an
   HMAC of the session id and of the turn id (never the raw ids), source, tx hash, chain ID, verdict,
   reason code, block and confirmation counts, expected and observed transfer fields, the RPC endpoint
   as scheme and host only, mode, and a timestamp. No conversation text, no raw tool output, no RPC URL
   path or query. The newest 300 rows are kept. `/proofly clear` deletes only the calling chat's rows.
-  Nothing is written inside the plugin's install directory.
+  Proofly's code writes nothing inside the plugin's install directory. The only files that appear
+  there are Python's own `__pycache__/` bytecode cache (written by the interpreter on import) and, for
+  catalog installs, Hermes' `.hermes-catalog.json` install record.
 - **Credentials:** does not access keys, sign transfers, create wallet transactions, access credential
   stores, or read `.env` files. It declares no `requires_env` and no secrets.
 - **Processes:** no background services, shell subprocesses, self-update, binaries or telemetry.
