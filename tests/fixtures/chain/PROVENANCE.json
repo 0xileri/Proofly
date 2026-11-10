@@ -1,0 +1,77 @@
+{
+ "checked_at": "2026-11-10T10:31:16+00:00",
+ "rpcs": [
+  "https://mainnet.base.org",
+  "https://base-rpc.publicnode.com"
+ ],
+ "transactions": {
+  "reverted": {
+   "tx_hash": "0x716a6f5fdf191d72233bd8c1b5ddb0ee1de6aae95cb5bfaba566150830cebe20",
+   "block_number": 55530464,
+   "block_hash": "0x8ba5c979c8a9e5ddbcb7aeadfa694c8fb7631207c57710bb65610645be076388",
+   "block_timestamp_utc": "2026-11-10T07:41:08+00:00",
+   "status": "0x0",
+   "from": "0x36305533942332816799925527ee84765a287191",
+   "to": "0x6dad641dc78085e1ba2b57c02300c46daebc43f2",
+   "value_wei": "0",
+   "log_count": 0,
+   "basescan": "https://basescan.org/tx/0x716a6f5fdf191d72233bd8c1b5ddb0ee1de6aae95cb5bfaba566150830cebe20",
+   "cross_checked_identical_on": [
+    "https://mainnet.base.org",
+    "https://base-rpc.publicnode.com"
+   ]
+  },
+  "eth_transfer": {
+   "tx_hash": "0x2c151d1905b6bb523537c197aea4df1f89decd378377e0f71f53dc1de1636995",
+   "block_number": 55530462,
+   "block_hash": "0x2f03b814a1c605f0cd2ba9463909db828bc5e5ada192267dcef5caefc66956ca",
+   "block_timestamp_utc": "2026-11-10T07:41:08+00:00",
+   "status": "0x1",
+   "from": "0x21854e24e7a657bf07f3bd282d5baf0d56e6d518",
+   "to": "0xf2d030657275d825114025fa791ea3f38214909d",
+   "value_wei": "1185524242299554",
+   "log_count": 0,
+   "basescan": "https://basescan.org/tx/0x2c151d1905b6bb523537c197aea4df1f89decd378377e0f71f53dc1de1636995",
+   "cross_checked_identical_on": [
+    "https://mainnet.base.org",
+    "https://base-rpc.publicnode.com"
+   ]
+  },
+  "usdc_transfer_30": {
+   "tx_hash": "0xaea5caf798ef5492f22d078e96e5a563357188bc6962fcf5cc7069d6a4b19070",
+   "block_number": 55530464,
+   "block_hash": "0x8ba5c979c8a9e5ddbcb7aeadfa694c8fb7631207c57710bb65610645be076388",
+   "block_timestamp_utc": "2026-11-10T07:41:08+00:00",
+   "status": "0x1",
+   "from": "0x1a42650a7a4c4fbbd7e1c0879259caf73ffc1ff9",
+   "to": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+   "value_wei": "0",
+   "log_count": 1,
+   "basescan": "https://basescan.org/tx/0xaea5caf798ef5492f22d078e96e5a563357188bc6962fcf5cc7069d6a4b19070",
+   "cross_checked_identical_on": [
+    "https://mainnet.base.org",
+    "https://base-rpc.publicnode.com"
+   ]
+  },
+  "usdc_transfer_other": {
+   "tx_hash": "0xbc124c469915c21441056b911c75bf359f3d7082461f2fd64850f62499e58044",
+   "block_number": 55530464,
+   "block_hash": "0x8ba5c979c8a9e5ddbcb7aeadfa694c8fb7631207c57710bb65610645be076388",
+   "block_timestamp_utc": "2026-11-10T07:41:08+00:00",
+   "status": "0x1",
+   "from": "0x6936ef2238a1be1b06b16c619e5e5e1eb926e145",
+   "to": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+   "value_wei": "0",
+   "log_count": 1,
+   "basescan": "https://basescan.org/tx/0xbc124c469915c21441056b911c75bf359f3d7082461f2fd64850f62499e58044",
+   "cross_checked_identical_on": [
+    "https://mainnet.base.org",
+    "https://base-rpc.publicnode.com"
+   ]
+  }
+ },
+ "chain_ids": {
+  "https://mainnet.base.org": "0x2105",
+  "https://base-rpc.publicnode.com": "0x2105"
+ }
+}

@@ -1,0 +1,12 @@
+name: proofly-demo-wallet
+version: "1.0.0"
+description: >-
+  DEMO ONLY, not for real use. A simulated Base USDC wallet tool for showing Proofly. It never
+  sends funds: it answers three scripted payment requests with "success" messages that carry
+  pre-recorded, real historical Base mainnet transaction hashes (one reverted, one that paid a
+  different wallet, one correct). Not part of the Proofly catalog entry.
+author: 0xileri
+license: MIT
+requires_hermes: ">=0.22.6"
+provides_tools:
+  - demo_send_payment

@@ -1,0 +1,54 @@
+name: proofly
+version: "1.0.0"
+description: >-
+  Checks an AI agent's claimed Base mainnet transfers against onchain evidence. It verifies the
+  tx hash, receipt status, recipient, token and exact raw amount over read-only JSON-RPC, corrects
+  misleading payment tool results, and stops unsupported "payment sent" claims from reaching the
+  user as verified. Read-only: never signs, sends or approves anything.
+author: 0xileri
+license: MIT
+homepage: https://github.com/0xileri/proofly
+requires_hermes: ">=0.22.6"
+tags: [base, payments, verification, onchain, safety]
+provides_tools:
+  - proofly_verify_tx
+provides_hooks:
+  - post_tool_call
+  - transform_tool_result
+  - transform_llm_output
+config_schema:
+  rpc_url:
+    type: str
+    default: "https://mainnet.base.org"
+    label: Base RPC URL
+    description: >-
+      HTTPS JSON-RPC endpoint for Base mainnet (chain 8453). Must report chain id 8453. The
+      operator of this endpoint sees the queried tx hashes and your IP address.
+  mode:
+    type: str
+    choices: [enforce, warn]
+    default: enforce
+    description: >-
+      enforce: rewrite unsupported payment success claims into a factual correction.
+      warn: keep the reply and append a prominent warning.
+  payment_tools:
+    type: list
+    default: []
+    label: Payment tools to verify
+    description: >-
+      Names of the tools that send Base payments. Only these tools' results are checked and
+      annotated, and only turns that call them have their final reply checked.
+  min_confirmations:
+    type: int
+    default: 3
+    description: Blocks (including the transaction's own) required before a match is VERIFIED (1-1000).
+  timeout_seconds:
+    type: int
+    default: 6
+    description: Per-request RPC timeout in seconds (1-20). One check never spends more than 20 seconds.
+  annotate_tool_results:
+    type: bool
+    default: true
+    description: >-
+      Replace a watched payment tool's result with the Proofly verdict before the model reads it.
+      The final reply is checked either way.
