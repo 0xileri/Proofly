@@ -1,0 +1,20 @@
+# Draft entry for NousResearch/hermes-agent: copy to plugin-catalog/proofly.yaml in a fork and open a PR.
+# sha = the commit validated in BUILD_REPORT.md (hermes plugins validate --install-deps on v0.23.1 and v0.22.6).
+name: proofly
+repo: https://github.com/0xileri/Proofly
+sha: 9fde65f5e8f5f5ab3ad6a5dc6a9848f119deb444
+description: Checks an AI agent's claimed Base transfers against onchain evidence and corrects unsupported payment claims.
+maintainer: 0xileri
+tier: community
+category: tools
+title: Proofly
+version: "1.0.0"
+requires_hermes: ">=0.22.6"
+known_issues:
+  - "Holds streamed replies in every session of the profile (hold_stream); tool progress and reasoning are not rewritten."
+  - "Only allowlisted payment tools (payment_tools setting) and proofly_verify_tx are checked; Base mainnet only."
+capabilities:
+  provides_tools: [proofly_verify_tx]
+  provides_hooks: [post_tool_call, transform_tool_result, transform_llm_output]
+  provides_middleware: []
+  requires_env: []
