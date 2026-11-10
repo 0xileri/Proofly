@@ -67,8 +67,9 @@ documentation only (this report, the draft catalog entry).
 - Storage: `plugins.plugin_storage.plugin_db(name)` (public API list) opens
   `<HERMES_HOME>/plugin-data/<name>/data.db`.
 - `config_schema` types accepted: `str, int, float, bool, list, dict, secret` and aliases.
-- The install scanner flags the phrase "do not tell the user" (`deception_hide`). An early draft of
-  the tool-result instruction used it; it was reworded and the scan is now `safe`.
+- The install scanner's `deception_hide` pattern matches instructions that tell the agent to keep
+  something from the user. An early draft of the tool-result instruction was phrased as a negative
+  "tell" instruction and matched it; it now states the verdict positively and the scan is `safe`.
 - `hermes config set display.tool_progress off` prints a spurious "not a recognized config key"
   notice on v0.23.1; the CLI and gateway still read the key (`hermes_cli/cli_init_mixin.py`,
   `gateway/display_config.py`).
@@ -186,9 +187,10 @@ confirmations are counted, finality is not checked.
    squash-merge into a new `main`, re-run `hermes plugins validate` at the new commit and re-pin), and
    open a PR adding only that file. The PR body can reuse README "Privacy, storage and security
    disclosures" and the command output above.
-4. **Post the demo (under 90 s) on X tagging @NousResearch**, then submit the catalog PR URL and the
-   X post URL at https://form.typeform.com/to/FwJLvOln. The organizer brief gives the deadline as
-   November 11, 2026, 5:00 PM EST (11:00 PM Africa/Lagos); confirm it on the form.
+4. **Share the demo (under 90 s) on X tagging @NousResearch**, then enter the catalog PR link and the
+   X link in the organizer's form. The organizer brief gives the deadline as November 11, 2026,
+   5:00 PM EST (11:00 PM Africa/Lagos); confirm it on the form.
+   Organizer form: https://form.typeform.com/to/FwJLvOln
 
 To reproduce the validation locally after installing Hermes:
 
