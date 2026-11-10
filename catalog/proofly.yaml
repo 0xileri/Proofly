@@ -1,18 +1,19 @@
-# Draft entry for NousResearch/hermes-agent: copy to plugin-catalog/proofly.yaml in a fork and open a PR.
-# sha = the commit validated in BUILD_REPORT.md (hermes plugins validate --install-deps on v0.23.1 and v0.22.6).
+# Mirror of plugin-catalog/proofly.yaml as submitted in https://github.com/NousResearch/hermes-agent/pull/152619
+# (pinned to the validated code commit; validated with scripts/validate_plugin_catalog.py and hermes plugins validate).
 name: proofly
 repo: https://github.com/0xileri/Proofly
 sha: 9fde65f5e8f5f5ab3ad6a5dc6a9848f119deb444
-description: Checks an AI agent's claimed Base transfers against onchain evidence and corrects unsupported payment claims.
+title: Proofly
+description: "Checks an agent's claimed Base mainnet transfers against chain evidence: tx hash, receipt status, recipient, token and exact raw amount, over read-only JSON-RPC. It annotates results from the payment tools you list in its payment_tools setting and corrects unsupported \"payment sent\" claims in the final reply; adds the read-only proofly_verify_tx tool and the /proofly command. Disclosure: sends read-only JSON-RPC requests (tx hashes) only to the configured Base RPC endpoint (default https://mainnet.base.org), whose operator sees the hashes and your IP; stores a verdict ledger (tx hash, verdict, expected and observed transfer fields, HMACs of session and turn ids, newest 300 rows) in plugin-data/proofly; registers transform_llm_output with hold_stream, so every reply in a profile that loads it is shown only after the check; no keys, signing, wallets, .env reads, shell, background processes, self-update or telemetry."
 maintainer: 0xileri
 tier: community
 category: tools
-title: Proofly
 version: "1.0.0"
 requires_hermes: ">=0.22.6"
+docs_url: https://github.com/0xileri/Proofly/blob/9fde65f5e8f5f5ab3ad6a5dc6a9848f119deb444/README.md
 known_issues:
-  - "Holds streamed replies in every session of the profile (hold_stream); tool progress and reasoning are not rewritten."
-  - "Only allowlisted payment tools (payment_tools setting) and proofly_verify_tx are checked; Base mainnet only."
+  - "Holds every reply in a profile that loads it until the check has run (hold_stream). Tool progress and reasoning are not rewritten; turn them off (display.tool_progress, display.show_reasoning) for strict use."
+  - "Checks only Base mainnet and only the tools named in payment_tools plus proofly_verify_tx. Without exact structured transfer details it reports execution only, never a verified payment."
 capabilities:
   provides_tools: [proofly_verify_tx]
   provides_hooks: [post_tool_call, transform_tool_result, transform_llm_output]

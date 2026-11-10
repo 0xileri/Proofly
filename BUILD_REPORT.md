@@ -21,9 +21,10 @@ documentation only (this report, the draft catalog entry).
 | Refuses to green-check an unrelated successful tx (case B, and EXECUTED without intent) | PASS |
 | Verifies a truly matching transfer (case C) | PASS |
 | Draft catalog entry parses with Hermes' `load_catalog` and matches `plugin.yaml` at the pin | PASS |
-| Draft PR on 0xileri/Proofly | BLOCKED: the repo had no commits, so this branch became its only and default branch; there is no base branch to open a PR against |
+| Default branch of 0xileri/Proofly | `main` (the session branch was renamed by the owner; `9fde65f` is in its history) |
 | Real Hermes chat session with a live model, demo video | NOT DONE: needs your model provider credentials and a screen recording |
-| Catalog PR to NousResearch/hermes-agent, X post, Typeform submission | NOT DONE: outward-facing, under your account; steps below |
+| Catalog PR to NousResearch/hermes-agent | OPEN: https://github.com/NousResearch/hermes-agent/pull/152619 (opened by 0xileri; one file, `plugin-catalog/proofly.yaml`; `scripts/validate_plugin_catalog.py`: `OK: 1 file(s) valid`, whole catalog `OK: 1473 file(s) valid`; `hermes plugins validate` passed on a fresh clone at the pin, v0.23.1 and v0.22.6). Catalog CI and maintainer review pending |
+| X post, Typeform submission | NOT DONE: under your account; steps below |
 
 ## Environment
 
@@ -178,16 +179,13 @@ confirmations are counted, finality is not checked.
 
 ## Remaining steps for you
 
-1. **Default branch / PR.** The repo's only branch is `claude/zen-brahmagupta-k188oi`. Either rename
-   it to `main` in GitHub settings, or create `main` and I can open a PR into it.
+1. **Watch the catalog PR** (https://github.com/NousResearch/hermes-agent/pull/152619): the catalog CI
+   clones Proofly at `9fde65f5e8f5f5ab3ad6a5dc6a9848f119deb444` and runs `hermes plugins validate`.
+   If a reviewer asks for changes to the entry, change only `plugin-catalog/proofly.yaml` on the
+   fork's `add-proofly` branch.
 2. **Record the demo in a real Hermes session** with a model: follow README "Demo". Label the wallet
-   as simulated.
-3. **Catalog PR.** Fork `NousResearch/hermes-agent`, copy `catalog/proofly.yaml` to
-   `plugin-catalog/proofly.yaml` (pin stays `9fde65f...`, which is in the branch history; if you
-   squash-merge into a new `main`, re-run `hermes plugins validate` at the new commit and re-pin), and
-   open a PR adding only that file. The PR body can reuse README "Privacy, storage and security
-   disclosures" and the command output above.
-4. **Share the demo (under 90 s) on X tagging @NousResearch**, then enter the catalog PR link and the
+   as simulated. Add the video link to the catalog PR as a comment.
+3. **Share the demo (under 90 s) on X tagging @NousResearch**, then enter the catalog PR link and the
    X link in the organizer's form. The organizer brief gives the deadline as November 11, 2026,
    5:00 PM EST (11:00 PM Africa/Lagos); confirm it on the form.
    Organizer form: https://form.typeform.com/to/FwJLvOln
